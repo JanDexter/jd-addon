@@ -18,7 +18,7 @@
             <field name="name">Hotel Room Type</field>
             <field name="model">hotel.roomtypes</field>
             <field name="arch" type="xml">
-                <form>
+                <form string="Hotel Room Type">
                     <sheet>
                         <group>
                             <field name="name"/>
@@ -28,7 +28,6 @@
                         </group>
                         <notebook>
                             <page string="Daily Charges">
-                                <!-- Content for Daily Charges will go here -->
                                 <group>
                                     <field name="daily_charge"/>
                                     <field name="extra_charge"/>

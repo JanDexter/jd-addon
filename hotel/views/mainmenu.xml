@@ -10,7 +10,7 @@
                  parent="menu_hotel_root"
                  sequence="20"/>
                  
-        <menuitem name="Master Lists" 
+        <menuitem name="Masterlists" 
                  id="menu_hotel_masterlists" 
                  parent="menu_hotel_root"
                  sequence="30"/>
