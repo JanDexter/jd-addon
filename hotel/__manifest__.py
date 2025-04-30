@@ -4,7 +4,7 @@
     'summary': "Hotel Management System",
     'description': "Hotel Guest Registration and Billing System",
     'author': "JD",
-    'website': "https://jd-website-test.vercel.app/",
+    'website': "https://jandexter.vercel.app/",
 
 
     'category': 'Uncategorized',
@@ -21,6 +21,7 @@
         'views/roomtypes.xml',
         'views/rooms.xml',
         'views/guests.xml',
+        'views/guestregistration.xml',
     ],
     'images': ['static/description/icon.png'],
     'installable': True,
