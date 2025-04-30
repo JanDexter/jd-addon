@@ -18,8 +18,6 @@ This is a custom Odoo module for managing hotel operations. It includes features
 - **Room Types**: Define various room types with details such as daily charges, extra charges, discounts, room capacity, and images.
 - **Charges**: Manage charges for rooms and additional services.
 - **Guests**: Track guest information and their stays.
-- **Booking Management**: Handle room bookings, check-ins, and check-outs.
-- **Reports**: Generate reports on occupancy rates and revenue.
 
 ## Installation
 
@@ -33,50 +31,112 @@ This is a custom Odoo module for managing hotel operations. It includes features
 After installation, you can configure the module:
 1. Go to **Settings** > **Hotel Management Settings**
 2. Configure default values for room charges, check-in/check-out times
-3. Set up email templates for booking confirmations and reminders
 
 ## Models
 
+### Rooms (`hotel.rooms`)
+- Fields:
+  - `name`: Room number (required).
+  - `description`: Room description.
+  - `roomtype_id`: Room type (many2one to `hotel.roomtypes`, required).
+  - `roomtypename`: Room type name (related, readonly).
+
 ### Room Types (`hotel.roomtypes`)
 - Fields:
-  - `name`: Name of the room type.
-  - `description`: Description of the room type.
-  - `daily_charge`: Daily charge for the room.
-  - `extra_charge`: Additional charges for the room.
-  - `discount`: Discount percentage.
-  - `total_charge`: Computed total charge after applying the discount.
-  - `room_type`: Type of the room (e.g., Single, Double, Suite).
-  - `room_capacity`: Maximum capacity of the room.
-  - `room_size`: Size of the room in square meters.
-  - `room_bed_type`: Type of bed in the room.
-  - `room_bed_count`: Number of beds in the room.
-  - `room_image`: Image of the room.
-  - `bathroom_image`: Image of the bathroom.
+  - `name`: Room type name (required).
+  - `description`: Room type description.
+  - `photobed`: Bed photo.
+  - `photorestroom`: Comfort room photo.
+  - `room_image`: Room image.
+  - `bathroom_image`: Bathroom image.
+  - `daily_charge`: Daily charge.
+  - `extra_charge`: Extra charge.
+  - `discount`: Discount (%).
+  - `total_charge`: Computed total charge after discount.
+  - `room_capacity`: Room capacity.
+  - `room_size`: Room size (sqm).
+  - `room_bed_type`: Bed type (single, double, queen, king).
+  - `room_bed_count`: Number of beds.
+  - `charge_history_ids`: One2many to charge history.
+  - `current_historical_charge`: Computed current charge from history.
+  - `roomtypes_list`: Computed list of all room types.
+- Main Functions:
+  - `_compute_roomtypes_list`: Computes all room types.
+  - `_compute_current_charge`: Computes the current historical charge.
+  - `_compute_total_charge`: Computes the total charge.
 
-### Bookings (`hotel.booking`)
+### Room Type Charge History (`hotel.roomtype.charge.history`)
 - Fields:
-  - `guest_id`: Link to the guest record
-  - `room_id`: Link to the room record
-  - `check_in_date`: Date of check-in
-  - `check_out_date`: Date of check-out
-  - `status`: Status of the booking (confirmed, checked-in, checked-out, cancelled)
-  - `total_amount`: Total amount for the stay
+  - `roomtype_id`: Room type (many2one, required).
+  - `date_from`: Valid from date (required).
+  - `date_to`: Valid to date.
+  - `charge_amount`: Charge amount (required).
+  - `is_current`: Computed boolean if this is the current charge.
+- Main Functions:
+  - `_compute_is_current`: Computes if the charge is current.
+
+### Daily Charges (`hotel.dailycharges`)
+- Fields:
+  - `charge_id`: Charge title (many2one to `hotel.charges`).
+  - `amount`: Daily amount.
+  - `roomtype_id`: Room type (many2one).
+
+### Charges (`hotel.charges`)
+- Fields:
+  - `name`: Charge name.
+  - `description`: Charge description.
+
+### Guests (`hotel.guest`)
+- Fields:
+  - `name`: Computed full name (Lastname, Firstname Middlename).
+  - `lastname`: Last name (required).
+  - `firstname`: First name (required).
+  - `middlename`: Middle name.
+  - `address_streetno`: Address / Street & No.
+  - `address_area`: Area, Unit & Bldg, Brgy.
+  - `address_city`: City / Town.
+  - `address_province`: Province / State.
+  - `zipcode`: ZIP Code.
+  - `contactno`: Contact number.
+  - `email`: Email.
+  - `gender`: Gender (Female/Male).
+  - `birthdate`: Birthday.
+  - `photo`: Guest photo.
+  - `age`: Computed age.
+- Main Functions:
+  - `_compute_name`: Builds the `name` from lastname, firstname, middlename.
+  - `_compute_age`: Computes the `age` from `birthdate`.
+
+### Guest Registration (`hotel.guestregistration`)
+- Fields:
+  - `room_id`: Room (many2one to `hotel.rooms`).
+  - `guest_id`: Guest (many2one to `hotel.guests`).
+  - `roomname`: Room number (related).
+  - `roomtname`: Room type (related).
+  - `guestname`: Guest name (related).
+  - `datecreated`: Date created (default today).
+  - `datefromSched`: Scheduled check-in.
+  - `datetoSched`: Scheduled check-out.
+  - `datefromAct`: Actual check-in.
+  - `datetoAct`: Actual check-out.
+  - `name`: Computed registration name (room, guest).
+- Main Functions:
+  - `_compute_name`: Concatenates room and guest name.
 
 ## Views
 
-- **List View**: Displays a list of room types with basic details.
-- **Form View**: Allows detailed editing of room type information, including charges and images.
-- **Calendar View**: Shows bookings in a calendar format.
-- **Kanban View**: Visual representation of room status.
-- **Dashboard**: Overview of hotel occupancy and revenue metrics.
+The module includes the following views defined in the views folder:
+
+- **Room Types Views**:
+  - List View (`hotel_roomtypes_list.xml`): Displays a list of room types with basic details.
+  - Form View (`hotel_roomtypes_form.xml`): Allows detailed editing of room type information, including charges and images.
+
+Additional views may be available based on the specific implementation in the views folder.
 
 ## Security
 
 Access control is defined in `security/ir.model.access.csv` to restrict access to authorized users.
-Different user roles include:
-- Hotel Manager: Full access to all features
-- Front Desk Staff: Access to bookings and guest information
-- Housekeeping: Limited access to room status information
+Security rules are set up to control access based on user roles and permissions.
 
 ## Usage
 
@@ -85,18 +145,9 @@ Different user roles include:
    - Add or edit room types with detailed information.
    - Upload images of rooms and bathrooms for better presentation.
 
-2. **Managing Bookings**:
-   - Go to the **Bookings** menu to create new bookings.
-   - Select a guest and room, enter check-in and check-out dates.
-   - Confirm the booking, which will automatically calculate charges.
-
-3. **Guest Check-in/Check-out**:
-   - Process guest check-ins and check-outs from the **Front Desk** dashboard.
-   - Print guest folios and receipts directly from the system.
-
-4. **Reporting**:
-   - Access the **Reports** section to view occupancy rates, revenue statistics, and other KPIs.
-   - Export reports in various formats (PDF, Excel, CSV).
+2. **Managing Hotel Operations**:
+   - Use the features provided by the installed module to manage your hotel operations.
+   - Refer to specific menu items created by the module for various management tasks.
 
 ## Troubleshooting
 
@@ -111,7 +162,18 @@ Different user roles include:
 
 ## Version Information
 
-- Version: 1.0.0
-- Compatible with Odoo 16.0
-- Last Updated: 2023-09-01
+- Version: 11.0.0
+- Compatible with Odoo 18.0
+- Last Updated: 2025-04-30
 - License: LGPL-3
+
+## Developer Notes
+
+To extend this module with additional models:
+1. Add new model files to the `models` folder
+2. Register them in `models/__init__.py`
+3. Create corresponding views in the `views` folder
+4. Update the `__manifest__.py` file to include the new models and views
+5. Update this documentation to reflect the new features
+6. If you encounter any issue, create a new issue in the repository. You can also directly contact me.
+7. If you see any inaccuracies in this readme, just contact me.
