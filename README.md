@@ -169,7 +169,6 @@ Security rules are set up to control access based on user roles and permissions.
 
 ## Developer Notes
 
-To extend this module with additional models:
 1. Add new model files to the `models` folder
 2. Register them in `models/__init__.py`
 3. Create corresponding views in the `views` folder
