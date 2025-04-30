@@ -4,11 +4,7 @@ from odoo import models, fields, api
 class Guests(models.Model):
     _name = 'hotel.guests'
     _description = 'Hotel Guests'
-    _order = 'lastname,firstname,middlename'
 
-    # Create name field first (before other fields)
-    name = fields.Char(string='Full Name', compute='_compute_name', store=True, index=True)
-    
     lastname = fields.Char(string="Last Name", required=True)
     firstname = fields.Char(string="First Name", required=True)
     middlename = fields.Char(string="Middle Name")
@@ -34,21 +30,3 @@ class Guests(models.Model):
                 )
             else:
                 record.age = 0
-
-    @api.depends('lastname', 'firstname', 'middlename')
-    def _compute_name(self):
-        for record in self:
-            name = ""
-            if record.lastname:
-                name += record.lastname
-            if record.firstname:
-                if name:
-                    name += ", " + record.firstname
-                else:
-                    name = record.firstname
-            if record.middlename:
-                if name:
-                    name += " " + record.middlename  # Space instead of comma before middle name
-                else:
-                    name = record.middlename
-            record.name = name
