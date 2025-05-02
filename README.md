@@ -2,6 +2,23 @@
 
 This is a custom Odoo module for managing hotel operations. It includes features for managing room types, charges, and other hotel-related data.
 
+## Version Information
+
+- Version: 11.0.0
+- Compatible with Odoo 18.0
+- Last Updated: 2025-04-30
+- License: LGPL-3
+
+## Developer Notes
+
+1. Add new model files to the `models` folder
+2. Register them in `models/__init__.py`
+3. Create corresponding views in the `views` folder
+4. Update the `__manifest__.py` file to include the new models and views
+5. Update this documentation to reflect the new features
+6. If you encounter any issue, create a new issue in the repository. You can also directly contact me.
+7. If you see any inaccuracies in this readme, just contact me.
+
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
@@ -152,27 +169,14 @@ Security rules are set up to control access based on user roles and permissions.
 ## Troubleshooting
 
 - **Issue**: Module doesn't appear in the Apps list
-  **Solution**: Check that the module folder is correctly placed and has the proper structure
+- **Solution**: Check that the module folder is correctly placed and has the proper structure
 
 - **Issue**: Images don't display correctly
-  **Solution**: Verify file formats are supported (JPG, PNG) and size limits are respected
+- **Solution**: Verify file formats are supported (JPG, PNG) and size limits are respected
+
+- **Issue**: InterfaceError
+- **Solution**: Reload the odoo page then restart the server(Ctrl or cmd + C) or just start a new terminal.
 
 - **Issue**: Calculation errors in charges
-  **Solution**: Verify discount settings and check for rounding configuration
+- **Solution**: Verify discount settings and check for rounding configuration
 
-## Version Information
-
-- Version: 11.0.0
-- Compatible with Odoo 18.0
-- Last Updated: 2025-04-30
-- License: LGPL-3
-
-## Developer Notes
-
-1. Add new model files to the `models` folder
-2. Register them in `models/__init__.py`
-3. Create corresponding views in the `views` folder
-4. Update the `__manifest__.py` file to include the new models and views
-5. Update this documentation to reflect the new features
-6. If you encounter any issue, create a new issue in the repository. You can also directly contact me.
-7. If you see any inaccuracies in this readme, just contact me.
